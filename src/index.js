@@ -21,8 +21,10 @@ class Marker {
   /**
    * @param {{api: object}}  - Editor.js API
    */
-  constructor({api}) {
+  constructor({api, config}) {
     this.api = api;
+    this.config = config;
+    this.defaultColors = this.config.defaultColors || [];
 
     /**
      * Toolbar Button
@@ -68,6 +70,28 @@ class Marker {
     this.button.innerHTML = this.toolboxIcon;
 
     return this.button;
+  }
+
+
+  renderActions() {
+    this.wrapper = document.createElement('div')
+    this.wrapper.style.padding = '2px'
+
+    this.wrapper.hidden = true
+
+    const inputWrapper = document.createElement('div')
+
+    this.wrapper.appendChild(inputWrapper)
+
+    this.defaultColors.forEach((color) => {
+      const button = document.createElement('button')
+      button.style.backgroundColor = color
+      button.style.width = '25px'
+      button.style.height = '25px'
+      this.wrapper.appendChild(button)
+    })
+
+    return this.wrapper
   }
 
   /**
@@ -159,7 +183,51 @@ class Marker {
   checkState() {
     const termTag = this.api.selection.findParentTag(this.tag, Marker.CSS);
 
-    this.button.classList.toggle(this.iconClasses.active, !!termTag);
+    if (this.defaultColors && this.defaultColors.length) {
+      this.state = !!termTag
+
+      if (this.state) {
+        this.showActions(termTag)
+      } else {
+        this.hideActions()
+      }
+      return this.state
+    } else {
+      this.button.classList.toggle(this.iconClasses.active, !!termTag);
+    }
+  }
+
+  showActions(span) {
+
+    this.defaultColors.forEach((color, index) => {
+      this.wrapper.children.item(
+        index + 1
+      ).onclick = () => {
+        span.style.backgroundColor = color
+        span.style.color = this.isLight(color) ? 'black': 'white';
+      }
+    })
+
+    this.wrapper.hidden = false
+  }
+
+  hideActions() {
+    this.wrapper.hidden = true
+  }
+
+  isLight(color) {
+    const [red, green, blue] = this.hexToRgb(color);
+    const luminance = (0.299 * red + 0.587 * green + 0.114 * blue)/255;
+    return luminance > 0.5;
+  }
+
+   hexToRgb(hex) {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? [
+      parseInt(result[1], 16),
+      parseInt(result[2], 16),
+      parseInt(result[3], 16)
+    ] : null;
   }
 
   /**
@@ -177,7 +245,8 @@ class Marker {
   static get sanitize() {
     return {
       mark: {
-        class: Marker.CSS
+        class: Marker.CSS,
+        style: true,
       }
     };
   }
