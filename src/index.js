@@ -75,7 +75,13 @@ class Marker {
 
   renderActions() {
     this.wrapper = document.createElement('div')
-    this.wrapper.style.padding = '2px'
+    this.wrapper.style.padding = '8px'
+
+    if(this.defaultColors.length) {
+      const label = document.createElement('small')
+      label.innerHTML = 'Marker Color'
+      this.wrapper.append(label)
+    }
 
     this.wrapper.hidden = true
 
