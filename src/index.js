@@ -85,17 +85,17 @@ class Marker {
 
     this.wrapper.hidden = true
 
-    const inputWrapper = document.createElement('div')
-
-    this.wrapper.appendChild(inputWrapper)
+    this.buttons = document.createElement('div')
 
     this.defaultColors.forEach((color) => {
       const button = document.createElement('button')
       button.style.backgroundColor = color
       button.style.width = '25px'
       button.style.height = '25px'
-      this.wrapper.appendChild(button)
+      this.buttons.appendChild(button)
     })
+
+    this.wrapper.appendChild(this.buttons)
 
     return this.wrapper
   }
@@ -206,9 +206,7 @@ class Marker {
   showActions(span) {
 
     this.defaultColors.forEach((color, index) => {
-      this.wrapper.children.item(
-        index + 1
-      ).onclick = () => {
+      this.buttons.children[index].onclick = () => {
         span.style.backgroundColor = color
         span.style.color = this.isLight(color) ? 'black': 'white';
       }
