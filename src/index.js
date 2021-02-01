@@ -77,7 +77,7 @@ class Marker {
     this.wrapper = document.createElement('div')
     this.wrapper.style.padding = '8px'
 
-    if(this.defaultColors.length) {
+    if (this.defaultColors.length) {
       const label = document.createElement('small')
       label.innerHTML = 'Marker Color'
       this.wrapper.append(label)
@@ -86,6 +86,8 @@ class Marker {
     this.wrapper.hidden = true
 
     this.buttons = document.createElement('div')
+    this.buttons.style.display = 'flex'
+    this.buttons.style.alignItems = 'center';
 
     this.defaultColors.forEach((color) => {
       const button = document.createElement('button')
@@ -95,7 +97,18 @@ class Marker {
       this.buttons.appendChild(button)
     })
 
+
+    this.clearHighlight = document.createElement('a');
+
+    this.clearHighlight.innerHTML = 'Clear Marker';
+    this.clearHighlight.style.textDecoration = 'underline'
+    this.clearHighlight.style.fontSize = '12px'
+    this.clearHighlight.style.margin = '5px 0px 0px 10px'
+
+    this.buttons.appendChild(this.clearHighlight)
+
     this.wrapper.appendChild(this.buttons)
+
 
     return this.wrapper
   }
@@ -208,9 +221,14 @@ class Marker {
     this.defaultColors.forEach((color, index) => {
       this.buttons.children[index].onclick = () => {
         span.style.backgroundColor = color
-        span.style.color = this.isLight(color) ? 'black': 'white';
+        span.style.color = this.isLight(color) ? 'black' : 'white';
       }
     })
+
+    this.clearHighlight.onclick = () => {
+      this.unwrap(span);
+    }
+
 
     this.wrapper.hidden = false
   }
