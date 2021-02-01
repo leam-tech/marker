@@ -227,6 +227,7 @@ class Marker {
 
     this.clearHighlight.onclick = () => {
       this.unwrap(span);
+      this.hideActions();
     }
 
 
